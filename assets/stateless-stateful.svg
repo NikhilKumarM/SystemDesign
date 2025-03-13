@@ -1,0 +1,207 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <style>
+    text { font-family: Arial, sans-serif; }
+    .title { font-size: 24px; font-weight: bold; text-anchor: middle; }
+    .subtitle { font-size: 20px; font-weight: bold; text-anchor: middle; }
+    .label { font-size: 14px; text-anchor: middle; }
+    .small-label { font-size: 10px; text-anchor: middle; }
+    .client { fill: #4DA6FF; }
+    .lb { fill: #20B2AA; }
+    .server { fill: #8A2BE2; }
+    .db { fill: #4682B4; }
+    .state { fill: #FFCC66; }
+    
+    /* Animation keyframes */
+    @keyframes moveRequest1 {
+      0%, 100% { transform: translate(0, 0); opacity: 1; }
+      15% { transform: translate(140px, 0); opacity: 1; }
+      30% { transform: translate(140px, 0); opacity: 0; }
+      31% { transform: translate(0, 0); opacity: 0; }
+    }
+    
+    @keyframes moveRequest2 {
+      0%, 30%, 100% { transform: translate(0, 0); opacity: 0; }
+      31% { transform: translate(0, 0); opacity: 1; }
+      45% { transform: translate(140px, -70px); opacity: 1; }
+      60% { transform: translate(140px, -70px); opacity: 0; }
+    }
+    
+    @keyframes moveRequest3 {
+      0%, 60%, 100% { transform: translate(0, 0); opacity: 0; }
+      61% { transform: translate(0, 0); opacity: 1; }
+      75% { transform: translate(140px, 70px); opacity: 1; }
+      90% { transform: translate(140px, 70px); opacity: 0; }
+    }
+    
+    @keyframes moveRequest4 {
+      0%, 100% { transform: translate(0, 0); opacity: 1; }
+      20% { transform: translate(260px, 0); opacity: 1; }
+      40% { transform: translate(260px, 0); opacity: 0; }
+      41% { transform: translate(0, 0); opacity: 0; }
+    }
+    
+    @keyframes moveRequest5 {
+      0%, 40%, 100% { transform: translate(0, 0); opacity: 0; }
+      41% { transform: translate(0, 0); opacity: 1; }
+      60% { transform: translate(260px, 0); opacity: 1; }
+      80% { transform: translate(260px, 0); opacity: 0; }
+    }
+    
+    @keyframes pulseServer {
+      0%, 15%, 45%, 75%, 100% { opacity: 0.2; }
+      30%, 60%, 90% { opacity: 1; }
+    }
+    
+    @keyframes pulseStatefulServer1 {
+      0%, 40%, 100% { opacity: 0.2; }
+      20% { opacity: 1; }
+    }
+    
+    @keyframes pulseStatefulServer2 {
+      0%, 40%, 100% { opacity: 0.2; }
+      60% { opacity: 1; }
+    }
+    
+    #stateless-request1 { animation: moveRequest1 6s infinite; }
+    #stateless-request2 { animation: moveRequest2 6s infinite; }
+    #stateless-request3 { animation: moveRequest3 6s infinite; }
+    
+    #stateful-request1 { animation: moveRequest4 6s infinite; }
+    #stateful-request2 { animation: moveRequest5 6s infinite; }
+    
+    #stateless-server1-highlight { animation: pulseServer 6s infinite 0s; }
+    #stateless-server2-highlight { animation: pulseServer 6s infinite 2s; }
+    #stateless-server3-highlight { animation: pulseServer 6s infinite 4s; }
+    
+    #stateful-server1-highlight { animation: pulseStatefulServer1 6s infinite; }
+    #stateful-server2-highlight { animation: pulseStatefulServer2 6s infinite; }
+  </style>
+  
+  <!-- Background -->
+  <rect width="800" height="500" fill="#f8f8f8"/>
+  
+  <!-- Title -->
+  <text x="400" y="40" class="title">Stateless vs. Stateful Services</text>
+  
+  <!-- ==================== STATELESS SECTION ==================== -->
+  <text x="200" y="80" class="subtitle">Stateless Service</text>
+  
+  <!-- Stateless Client -->
+  <rect x="20" y="160" width="80" height="40" rx="5" class="client"/>
+  <text x="60" y="185" class="label">Client</text>
+  
+  <!-- Stateless Load Balancer -->
+  <rect x="160" y="160" width="80" height="40" rx="5" class="lb"/>
+  <text x="200" y="185" class="label">Load Balancer</text>
+  
+  <!-- Stateless Servers -->
+  <rect x="300" y="90" width="80" height="40" rx="5" class="server"/>
+  <text x="340" y="115" class="label">Server 1</text>
+  <rect id="stateless-server1-highlight" x="295" y="85" width="90" height="50" rx="8" fill="#FFFF00" opacity="0.2" stroke="#FF8800" stroke-width="2"/>
+  
+  <rect x="300" y="160" width="80" height="40" rx="5" class="server"/>
+  <text x="340" y="185" class="label">Server 2</text>
+  <rect id="stateless-server2-highlight" x="295" y="155" width="90" height="50" rx="8" fill="#FFFF00" opacity="0.2" stroke="#FF8800" stroke-width="2"/>
+  
+  <rect x="300" y="230" width="80" height="40" rx="5" class="server"/>
+  <text x="340" y="255" class="label">Server 3</text>
+  <rect id="stateless-server3-highlight" x="295" y="225" width="90" height="50" rx="8" fill="#FFFF00" opacity="0.2" stroke="#FF8800" stroke-width="2"/>
+  
+  <!-- Shared Database -->
+  <rect x="300" y="320" width="80" height="40" rx="5" class="db"/>
+  <text x="340" y="345" class="label">Database</text>
+  
+  <!-- Stateless Arrows -->
+  <line x1="100" y1="180" x2="160" y2="180" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="155,175 165,180 155,185" fill="#000"/>
+  
+  <line x1="240" y1="160" x2="300" y2="110" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="295,113 305,105 300,115" fill="#000"/>
+  
+  <line x1="240" y1="180" x2="300" y2="180" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="295,175 305,180 295,185" fill="#000"/>
+  
+  <line x1="240" y1="200" x2="300" y2="250" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="295,245 305,255 295,255" fill="#000"/>
+  
+  <!-- State Connections -->
+  <line x1="340" y1="130" x2="340" y2="320" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-dasharray="5,5"/>
+  <line x1="340" y1="200" x2="340" y2="320" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-dasharray="5,5"/>
+  <line x1="340" y1="270" x2="340" y2="320" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-dasharray="5,5"/>
+  
+  <!-- Explanation Text -->
+  <rect x="20" y="380" width="360" height="100" rx="10" fill="white" stroke="#ddd"/>
+  <text x="40" y="400" font-size="14" font-weight="bold">Stateless Characteristics:</text>
+  <text x="40" y="425" font-size="12">• Any server can handle any request</text>
+  <text x="40" y="445" font-size="12">• Load balancer distributes requests to any server</text>
+  <text x="40" y="465" font-size="12">• All state stored in central database</text>
+  
+  <!-- Request Animation Elements -->
+  <circle id="stateless-request1" cx="100" cy="180" r="8" fill="red" opacity="1"/>
+  <circle id="stateless-request2" cx="100" cy="180" r="8" fill="red" opacity="0"/>
+  <circle id="stateless-request3" cx="100" cy="180" r="8" fill="red" opacity="0"/>
+  
+  <!-- ==================== STATEFUL SECTION ==================== -->
+  <text x="600" y="80" class="subtitle">Stateful Service</text>
+  
+  <!-- Stateful Clients -->
+  <rect x="420" y="140" width="80" height="40" rx="5" class="client"/>
+  <text x="460" y="165" class="label">Client A</text>
+  
+  <rect x="420" y="200" width="80" height="40" rx="5" class="client"/>
+  <text x="460" y="225" class="label">Client B</text>
+  
+  <!-- Stateful Gateway -->
+  <rect x="560" y="170" width="80" height="40" rx="5" class="lb"/>
+  <text x="600" y="195" class="label">Gateway</text>
+  
+  <!-- Stateful Servers with State -->
+  <rect x="700" y="110" width="80" height="40" rx="5" class="server"/>
+  <text x="740" y="135" class="label">Server 1</text>
+  <rect x="700" y="150" width="80" height="20" rx="5" class="state"/>
+  <text x="740" y="165" class="small-label">State A</text>
+  <rect id="stateful-server1-highlight" x="695" y="105" width="90" height="70" rx="8" fill="#FFFF00" opacity="0.2" stroke="#FF8800" stroke-width="2"/>
+  
+  <rect x="700" y="210" width="80" height="40" rx="5" class="server"/>
+  <text x="740" y="235" class="label">Server 2</text>
+  <rect x="700" y="250" width="80" height="20" rx="5" class="state"/>
+  <text x="740" y="265" class="small-label">State B</text>
+  <rect id="stateful-server2-highlight" x="695" y="205" width="90" height="70" rx="8" fill="#FFFF00" opacity="0.2" stroke="#FF8800" stroke-width="2"/>
+  
+  <!-- Backup Database -->
+  <rect x="700" y="320" width="80" height="40" rx="5" class="db"/>
+  <text x="740" y="335" class="small-label">Database</text>
+  <text x="740" y="355" class="small-label">(Backup)</text>
+  
+  <!-- Stateful Arrows with adjusted text positions -->
+  <line x1="500" y1="160" x2="560" y2="180" stroke="#FF0000" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="555,175 565,180 555,185" fill="#FF0000"/>
+  <text x="530" y="155" font-size="10" fill="#FF0000">Client A requests</text>
+  
+  <line x1="500" y1="220" x2="560" y2="180" stroke="#0000FF" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="555,175 565,180 555,185" fill="#0000FF"/>
+  <text x="530" y="230" font-size="10" fill="#0000FF">Client B requests</text>
+  
+  <line x1="640" y1="170" x2="700" y2="130" stroke="#FF0000" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="695,133 705,125 700,135" fill="#FF0000"/>
+  <text x="670" y="120" font-size="10" fill="#FF0000">Always to Server 1</text>
+  
+  <line x1="640" y1="190" x2="700" y2="230" stroke="#0000FF" stroke-width="2" stroke-linecap="round"/>
+  <polygon points="695,225 705,235 695,235" fill="#0000FF"/>
+  <text x="670" y="250" font-size="10" fill="#0000FF">Always to Server 2</text>
+  
+  <!-- Backup Connections -->
+  <line x1="740" y1="170" x2="740" y2="320" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-dasharray="5,5"/>
+  <line x1="740" y1="270" x2="740" y2="320" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-dasharray="5,5"/>
+  
+  <!-- Explanation Text -->
+  <rect x="420" y="380" width="360" height="100" rx="10" fill="white" stroke="#ddd"/>
+  <text x="440" y="400" font-size="14" font-weight="bold">Stateful Characteristics:</text>
+  <text x="440" y="425" font-size="12">• Requests from same client always go to same server</text>
+  <text x="440" y="445" font-size="12">• Gateway routes based on client ID or partition key</text>
+  <text x="440" y="465" font-size="12">• Each server maintains state for its assigned clients</text>
+  
+  <!-- Request Animation Elements -->
+  <circle id="stateful-request1" cx="500" cy="170" r="8" fill="#FF0000" opacity="1"/>
+  <circle id="stateful-request2" cx="500" cy="220" r="8" fill="#0000FF" opacity="0"/>
+</svg>
