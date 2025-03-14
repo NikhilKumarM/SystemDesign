@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f8fa;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 40px;
+      margin-bottom: 20px;
+    }
+    
+    .animation-container {
+      position: relative;
+      width: 400px;
+      height: 300px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: white;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .bucket {
+      position: absolute;
+      width: 100px;
+      height: 120px;
+      bottom: 40px;
+      left: 150px;
+      background-color: #3498db;
+      border: 4px solid #2980b9;
+      border-bottom: 4px solid #2980b9;
+      border-radius: 0 0 20px 20px;
+      overflow: hidden;
+      transition: background-color 0.3s;
+    }
+    
+    .bucket::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: -4px;
+      width: 108px;
+      height: 20px;
+      background-color: #2980b9;
+      border-radius: 20px 20px 0 0;
+    }
+    
+    .water {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #74b9ff;
+      transition: height 0.5s ease-out;
+    }
+    
+    .token {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #f1c40f;
+      border-radius: 50%;
+      border: 2px solid #f39c12;
+      transition: all 0.5s ease;
+    }
+    
+    .request {
+      position: absolute;
+      width: 25px;
+      height: 25px;
+      background-color: #e74c3c;
+      border-radius: 50%;
+      border: 2px solid #c0392b;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-weight: bold;
+      font-size: 12px;
+      transition: all 0.5s ease;
+      opacity: 0;
+    }
+    
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 280px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .slider-container {
+      margin-bottom: 10px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #2c3e50;
+      font-weight: 500;
+    }
+    
+    input[type="range"] {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.3s;
+    }
+    
+    button:hover {
+      background-color: #2980b9;
+    }
+    
+    button:disabled {
+      background-color: #95a5a6;
+      cursor: not-allowed;
+    }
+    
+    .status {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 4px;
+      text-align: center;
+      font-weight: 500;
+    }
+    
+    .success {
+      background-color: #d5f5e3;
+      color: #27ae60;
+    }
+    
+    .error {
+      background-color: #fadbd8;
+      color: #e74c3c;
+    }
+    
+    .neutral {
+      background-color: #eaeded;
+      color: #7f8c8d;
+    }
+    
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .legend-color {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+    }
+    
+    .explanation {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>Token Bucket Algorithm</h1>
+  
+  <div class="container">
+    <div class="animation-container" id="animationContainer">
+      <div class="bucket" id="bucket">
+        <div class="water" id="water"></div>
+      </div>
+    </div>
+    
+    <div class="controls">
+      <div class="slider-container">
+        <label for="bucketSize">Bucket Size (max tokens):</label>
+        <input type="range" id="bucketSize" min="1" max="10" value="5">
+        <span id="bucketSizeValue">5 tokens</span>
+      </div>
+      
+      <div class="slider-container">
+        <label for="refillRate">Token Refill Rate:</label>
+        <input type="range" id="refillRate" min="1" max="5" value="1">
+        <span id="refillRateValue">1 token/second</span>
+      </div>
+      
+      <div class="slider-container">
+        <label for="requestCost">Request Cost:</label>
+        <input type="range" id="requestCost" min="1" max="5" value="1">
+        <span id="requestCostValue">1 token</span>
+      </div>
+      
+      <button id="sendRequest">Send Request</button>
+      <button id="sendBurst">Send Burst (5 Requests)</button>
+      
+      <div class="status neutral" id="status">Ready to process requests</div>
+    </div>
+  </div>
+  
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-color" style="background-color: #f1c40f;"></div>
+      <span>Token</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background-color: #e74c3c;"></div>
+      <span>Request</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background-color: #74b9ff;"></div>
+      <span>Available Capacity</span>
+    </div>
+  </div>
+  
+  <div class="explanation">
+    <h3>How the Token Bucket Algorithm Works:</h3>
+    <p>The token bucket algorithm is a simple rate limiting mechanism used to control the amount of data or requests that can be processed.</p>
+    
+    <h4>Key Concepts:</h4>
+    <ol>
+      <li><strong>Bucket:</strong> Represents a container with a fixed capacity for tokens.</li>
+      <li><strong>Tokens:</strong> Added to the bucket at a steady rate (the refill rate).</li>
+      <li><strong>Requests:</strong> Each request consumes one or more tokens from the bucket.</li>
+      <li><strong>Throttling:</strong> If there aren't enough tokens, the request is either delayed or rejected.</li>
+    </ol>
+    
+    <h4>Controls:</h4>
+    <ul>
+      <li><strong>Bucket Size:</strong> Maximum number of tokens that can be stored.</li>
+      <li><strong>Refill Rate:</strong> How quickly new tokens are added (tokens per second).</li>
+      <li><strong>Request Cost:</strong> How many tokens each request consumes.</li>
+    </ul>
+    
+    <h4>Benefits:</h4>
+    <ul>
+      <li>Allows for bursts of traffic (up to the bucket size).</li>
+      <li>Smooths out request processing over time.</li>
+      <li>Protects services from being overwhelmed.</li>
+      <li>Simple to implement and understand.</li>
+    </ul>
+  </div>
+
+  <script>
+    const bucketSizeSlider = document.getElementById('bucketSize');
+    const refillRateSlider = document.getElementById('refillRate');
+    const requestCostSlider = document.getElementById('requestCost');
+    const bucketSizeValue = document.getElementById('bucketSizeValue');
+    const refillRateValue = document.getElementById('refillRateValue');
+    const requestCostValue = document.getElementById('requestCostValue');
+    const sendRequestBtn = document.getElementById('sendRequest');
+    const sendBurstBtn = document.getElementById('sendBurst');
+    const statusDisplay = document.getElementById('status');
+    const waterElement = document.getElementById('water');
+    const bucketElement = document.getElementById('bucket');
+    const animationContainer = document.getElementById('animationContainer');
+    
+    let bucketSize = parseInt(bucketSizeSlider.value);
+    let refillRate = parseInt(refillRateSlider.value);
+    let requestCost = parseInt(requestCostSlider.value);
+    let currentTokens = bucketSize;
+    let processing = false;
+    let tokenCounter = 0;
+    
+    // Update displayed values
+    bucketSizeSlider.addEventListener('input', () => {
+      bucketSize = parseInt(bucketSizeSlider.value);
+      bucketSizeValue.textContent = `${bucketSize} tokens`;
+      updateWaterLevel();
+    });
+    
+    refillRateSlider.addEventListener('input', () => {
+      refillRate = parseInt(refillRateSlider.value);
+      refillRateValue.textContent = `${refillRate} token${refillRate !== 1 ? 's' : ''}/second`;
+    });
+    
+    requestCostSlider.addEventListener('input', () => {
+      requestCost = parseInt(requestCostSlider.value);
+      requestCostValue.textContent = `${requestCost} token${requestCost !== 1 ? 's' : ''}`;
+    });
+    
+    // Update water level based on current tokens
+    function updateWaterLevel() {
+      const percentage = (currentTokens / bucketSize) * 100;
+      waterElement.style.height = `${percentage}%`;
+      
+      if (percentage < 20) {
+        waterElement.style.backgroundColor = '#ff7675';
+      } else if (percentage < 50) {
+        waterElement.style.backgroundColor = '#74b9ff';
+      } else {
+        waterElement.style.backgroundColor = '#55efc4';
+      }
+    }
+    
+    // Add a token to the animation
+    function addTokenAnimation() {
+      const token = document.createElement('div');
+      token.className = 'token';
+      token.style.top = '-30px';
+      token.style.left = `${150 + Math.random() * 40}px`;
+      token.id = `token-${tokenCounter++}`;
+      
+      animationContainer.appendChild(token);
+      
+      setTimeout(() => {
+        token.style.top = `${40 + Math.random() * 20}px`;
+      }, 50);
+      
+      setTimeout(() => {
+        token.style.top = `${100 - (currentTokens / bucketSize) * 80}px`;
+        
+        setTimeout(() => {
+          token.remove();
+        }, 500);
+      }, 800);
+    }
+    
+    // Process a request animation
+    function processRequestAnimation() {
+      const request = document.createElement('div');
+      request.className = 'request';
+      request.textContent = requestCost;
+      request.style.right = '-30px';
+      request.style.top = '150px';
+      
+      animationContainer.appendChild(request);
+      
+      // Move request to bucket
+      request.style.opacity = '1';
+      request.style.right = '130px';
+      
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          if (currentTokens >= requestCost) {
+            // Success - consume tokens
+            request.style.top = '100px';
+            request.style.backgroundColor = '#2ecc71';
+            request.style.borderColor = '#27ae60';
+            
+            // Remove tokens
+            for (let i = 0; i < requestCost; i++) {
+              removeToken();
+            }
+            
+            setTimeout(() => {
+              request.style.opacity = '0';
+              setTimeout(() => {
+                request.remove();
+                resolve(true);
+              }, 500);
+            }, 800);
+          } else {
+            // Failure - not enough tokens
+            request.style.backgroundColor = '#e74c3c';
+            request.style.borderColor = '#c0392b';
+            request.style.transform = 'scale(1.2)';
+            
+            setTimeout(() => {
+              request.style.right = '-30px';
+              request.style.opacity = '0';
+              setTimeout(() => {
+                request.remove();
+                resolve(false);
+              }, 500);
+            }, 800);
+          }
+        }, 1000);
+      });
+    }
+    
+    // Remove token animation
+    function removeToken() {
+      if (currentTokens <= 0) return;
+      
+      currentTokens--;
+      updateWaterLevel();
+      
+      // Find a token to remove
+      const tokens = document.querySelectorAll('.token');
+      if (tokens.length > 0) {
+        const token = tokens[tokens.length - 1];
+        token.style.top = '300px';
+        setTimeout(() => {
+          token.remove();
+        }, 500);
+      }
+    }
+    
+    // Send a request
+    async function sendRequest() {
+      if (processing) return;
+      
+      processing = true;
+      sendRequestBtn.disabled = true;
+      sendBurstBtn.disabled = true;
+      
+      statusDisplay.className = 'status neutral';
+      statusDisplay.textContent = 'Processing request...';
+      
+      const success = await processRequestAnimation();
+      
+      if (success) {
+        statusDisplay.className = 'status success';
+        statusDisplay.textContent = `Request processed! Used ${requestCost} token${requestCost !== 1 ? 's' : ''}`;
+      } else {
+        statusDisplay.className = 'status error';
+        statusDisplay.textContent = `Request throttled! Not enough tokens (need ${requestCost}, have ${currentTokens})`;
+      }
+      
+      processing = false;
+      sendRequestBtn.disabled = false;
+      sendBurstBtn.disabled = false;
+    }
+    
+    // Send multiple requests in burst
+    async function sendBurst() {
+      if (processing) return;
+      
+      processing = true;
+      sendRequestBtn.disabled = true;
+      sendBurstBtn.disabled = true;
+      
+      statusDisplay.className = 'status neutral';
+      statusDisplay.textContent = 'Processing burst of 5 requests...';
+      
+      let successCount = 0;
+      
+      for (let i = 0; i < 5; i++) {
+        const success = await processRequestAnimation();
+        if (success) successCount++;
+      }
+      
+      statusDisplay.className = successCount === 5 ? 'status success' : 'status neutral';
+      statusDisplay.textContent = `Burst complete: ${successCount}/5 requests processed`;
+      
+      processing = false;
+      sendRequestBtn.disabled = false;
+      sendBurstBtn.disabled = false;
+    }
+    
+    // Add token refill interval
+    setInterval(() => {
+      if (currentTokens < bucketSize) {
+        for (let i = 0; i < refillRate; i++) {
+          if (currentTokens < bucketSize) {
+            currentTokens++;
+            addTokenAnimation();
+          }
+        }
+        updateWaterLevel();
+      }
+    }, 1000);
+    
+    // Initialize water level
+    updateWaterLevel();
+    
+    // Initialize with some tokens
+    for (let i = 0; i < currentTokens; i++) {
+      setTimeout(() => {
+        addTokenAnimation();
+      }, i * 200);
+    }
+    
+    // Add event listeners
+    sendRequestBtn.addEventListener('click', sendRequest);
+    sendBurstBtn.addEventListener('click', sendBurst);
+  </script>
+</body>
+</html>
