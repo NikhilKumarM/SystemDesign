@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Design Hub | Personal Portfolio</title>
+  <style>
+    :root {
+      --neon-blue: #00f7ff;
+      --neon-purple: #b400ff;
+      --neon-pink: #ff00e4;
+      --dark-bg: #0a0a14;
+      --glass-bg: rgba(22, 22, 36, 0.7);
+      --glass-border: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--dark-bg);
+      color: white;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 247, 255, 0.1) 0%, transparent 30%),
+        radial-gradient(circle at 90% 80%, rgba(180, 0, 255, 0.1) 0%, transparent 30%);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      backdrop-filter: blur(12px);
+      background: var(--glass-bg);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      position: relative;
+    }
+
+    .logo::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover::after {
+      transform: scaleX(1);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--neon-blue);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 100%;
+      height: 2px;
+      background: var(--neon-blue);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+      transform: scaleX(1);
+    }
+
+    /* Hero Section */
+    .hero {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      max-width: 800px;
+      padding: 40px;
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.8s forwards 0.2s;
+    }
+
+    .hero-subtitle {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.8s forwards 0.4s;
+    }
+
+    .hero-btn {
+      display: inline-block;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+      color: white;
+      padding: 12px 30px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      margin: 10px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.8s forwards 0.6s;
+    }
+
+    .hero-btn:hover {
+      transform: translateY(-5px);
+    }
+
+    .hero-btn::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      width: calc(100% + 4px);
+      height: calc(100% + 4px);
+      background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue), var(--neon-purple));
+      border-radius: 30px;
+      z-index: -1;
+      animation: borderGlow 4s linear infinite;
+    }
+
+    /* About Section */
+    .about {
+      padding: 100px 0;
+      position: relative;
+    }
+
+    .about-container {
+      display: flex;
+      align-items: center;
+      gap: 50px;
+      position: relative;
+    }
+
+    .about-img {
+      flex: 1;
+      position: relative;
+    }
+
+    .avatar {
+      width: 300px;
+      height: 300px;
+      background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+      border-radius: 50%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(0, 247, 255, 0.5);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .avatar::before {
+      content: 'A';
+      font-size: 150px;
+      font-weight: bold;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .hologram-ring {
+      position: absolute;
+      width: 120%;
+      height: 120%;
+      border: 2px solid rgba(0, 247, 255, 0.3);
+      border-radius: 50%;
+      animation: rotate 10s linear infinite;
+    }
+
+    .hologram-ring:nth-child(2) {
+      width: 140%;
+      height: 140%;
+      animation-duration: 15s;
+      animation-direction: reverse;
+      border-color: rgba(180, 0, 255, 0.3);
+    }
+
+    .about-content {
+      flex: 1.5;
+      padding: 30px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      border: 1px solid var(--glass-border);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .about-content:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 30px rgba(0, 247, 255, 0.2);
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .about-text {
+      line-height: 1.8;
+      margin-bottom: 30px;
+    }
+
+    .skills-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .skill-tag {
+      padding: 8px 15px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 30px;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      animation: pulse 3s infinite alternate;
+    }
+
+    .skill-tag:nth-child(odd) {
+      animation-delay: 0.5s;
+    }
+
+    .skill-tag:hover {
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 247, 255, 0.3);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .social-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .social-btn:hover {
+      transform: translateY(-5px);
+    }
+
+    .social-btn::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      width: calc(100% + 4px);
+      height: calc(100% + 4px);
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+      border-radius: 50%;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .social-btn:hover::before {
+      opacity: 1;
+    }
+
+    .social-btn i {
+      font-size: 20px;
+      color: white;
+    }
+
+    /* System Design Section */
+    .system-design {
+      padding: 100px 0;
+      position: relative;
+    }
+
+    .section-intro {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 50px;
+    }
+
+    .cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    .card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border-radius: 15px;
+      border: 1px solid var(--glass-border);
+      overflow: hidden;
+      position: relative;
+      height: 250px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 30px rgba(0, 247, 255, 0.2);
+    }
+
+    .card-icon {
+      height: 60%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(0, 247, 255, 0.1), rgba(180, 0, 255, 0.1));
+      transition: height 0.3s ease;
+    }
+
+    .card:hover .card-icon {
+      height: 30%;
+    }
+
+    .card-icon i {
+      font-size: 50px;
+      color: white;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .card-content {
+      padding: 20px;
+      transform: translateY(0);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover .card-content {
+      transform: translateY(-40px);
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      opacity: 0;
+      height: 0;
+      overflow: hidden;
+      transition: opacity 0.3s ease, height 0.3s ease;
+    }
+
+    .card:hover .card-desc {
+      opacity: 1;
+      height: auto;
+    }
+
+    .card-link {
+      display: inline-block;
+      margin-top: 15px;
+      color: var(--neon-blue);
+      text-decoration: none;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .card:hover .card-link {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Footer */
+    footer {
+      padding: 50px 0 20px;
+      text-align: center;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--glass-border);
+    }
+
+    .footer-text {
+      margin-top: 20px;
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes borderGlow {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-15px);
+      }
+    }
+
+    @keyframes rotate {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 rgba(0, 247, 255, 0);
+      }
+      100% {
+        box-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
+      }
+    }
+
+    /* Media Queries */
+    @media (max-width: 992px) {
+      .about-container {
+        flex-direction: column;
+      }
+      
+      .hero-title {
+        font-size: 2.5rem;
+      }
+      
+      .hero-subtitle {
+        font-size: 1.2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .cards-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .nav-container {
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      .section-title {
+        font-size: 2rem;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" />
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-container">
+      <div class="logo">SystemDesignHub</div>
+      <div class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#system-design">System Design</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <h1 class="hero-title">System Design & Architecture</h1>
+      <p class="hero-subtitle">A comprehensive guide to modern distributed systems, architectures, and design patterns</p>
+      <a href="#system-design" class="hero-btn">Explore Concepts</a>
+      <a href="#about" class="hero-btn">About Me</a>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about" id="about">
+    <div class="container about-container">
+      <div class="about-img">
+        <div class="avatar">
+          <div class="hologram-ring"></div>
+          <div class="hologram-ring"></div>
+        </div>
+      </div>
+      <div class="about-content">
+        <h2 class="section-title">About Me</h2>
+        <p class="about-text">
+          Hello! I'm a passionate software architect specializing in distributed systems and cloud architecture. With over a decade of experience designing and implementing scalable, resilient systems for enterprise applications, I've developed a deep understanding of modern system design principles and best practices.
+        </p>
+        <p class="about-text">
+          This platform serves as both my personal portfolio and an educational hub where I share insights, knowledge, and practical approaches to complex system design challenges. My goal is to simplify these concepts and make them accessible to engineers at all levels.
+        </p>
+        <div class="skills-container">
+          <span class="skill-tag">Distributed Systems</span>
+          <span class="skill-tag">Microservices</span>
+          <span class="skill-tag">Cloud Architecture</span>
+          <span class="skill-tag">Azure</span>
+          <span class="skill-tag">AWS</span>
+          <span class="skill-tag">Kubernetes</span>
+          <span class="skill-tag">Kafka</span>
+          <span class="skill-tag">Docker</span>
+          <span class="skill-tag">API Design</span>
+          <span class="skill-tag">Event-driven Architecture</span>
+        </div>
+        <div class="social-links">
+          <a href="#" class="social-btn"><i class="fas fa-envelope"></i></a>
+          <a href="#" class="social-btn"><i class="fab fa-github"></i></a>
+          <a href="#" class="social-btn"><i class="fab fa-linkedin"></i></a>
+          <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- System Design Section -->
+  <section class="system-design" id="system-design">
+    <div class="container">
+      <div class="section-intro">
+        <h2 class="section-title">System Design Concepts</h2>
+        <p>Explore fundamental concepts and patterns for building scalable, resilient distributed systems</p>
+      </div>
+      <div class="cards-container">
+        <!-- Card 1 -->
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-balance-scale"></i>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Load Balancing</h3>
+            <p class="card-desc">Techniques and strategies for distributing network traffic across multiple servers to ensure reliability, performance, and high availability.</p>
+            <a href="#" class="card-link">Read More →</a>
+          </div>
+        </div>
+        
+        <!-- Card 2 -->
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-database"></i>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Database Design</h3>
+            <p class="card-desc">Approaches to database architecture including SQL vs NoSQL, sharding, replication, and strategies for data consistency and availability.</p>
+            <a href="#" class="card-link">Read More →</a>
+          </div>
+        </div>
+        
+        <!-- Card 3 -->
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-memory"></i>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Caching</h3>
+            <p class="card-desc">Implementation strategies for application and database caching to reduce latency, increase throughput, and improve system performance.</p>
+            <a href="#" class="card-link">Read More →</a>
+          </div>
+        </div>
+        
+        <!-- Card 4 -->
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-network-wired"></i>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Microservices</h3>
+            <p class="card-desc">Design patterns, communication strategies, and implementation challenges in microservices architecture and distributed systems.</p>
+            <a href="#" class="card-link">Read More →</a>
+          </div>
+        </div>
+        
+        <!-- Card 5 -->
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-stream"></i>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Event-driven Architecture</h3>
+            <p class="card-desc">Building loosely coupled, scalable systems using event streams, message queues, and asynchronous processing patterns.</p>
+            <a href="#" class="card-link">Read More →</a>
+          </div>
+        </div>
+        
+        <!-- Card 6 -->
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">Security & Auth</h3>
+            <p class="card-desc">Best practices for implementing authentication, authorization, and data protection in distributed system architectures.</p>
+            <a href="#" class="card-link">Read More →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contact">
+    <div class="container">
+      <div class="logo">SystemDesignHub</div>
+      <div class="social-links" style="justify-content: center; margin-top: 20px;">
+        <a href="#" class="social-btn"><i class="fas fa-envelope"></i></a>
+        <a href="#" class="social-btn"><i class="fab fa-github"></i></a>
+        <a href="#" class="social-btn"><i class="fab fa-linkedin"></i></a>
+        <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
+      </div>
+      <p class="footer-text">© 2025 SystemDesignHub. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Simple Parallax Effect
+    window.addEventListener('scroll', function() {
+      const scrollPosition = window.pageYOffset;
+      
+      // Parallax for hero section
+      document.querySelector('.hero-content').style.transform = `translateY(${scrollPosition * 0.3}px)`;
+      
+      // Reveal animations for sections when scrolled into view
+      const sections = document.querySelectorAll('section');
+      sections.forEach(section => {
+        const sectionTop = section.getBoundingClientRect().top;
+        const screenPosition = window.innerHeight / 1.3;
+        
+        if(sectionTop < screenPosition) {
+          section.classList.add('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
